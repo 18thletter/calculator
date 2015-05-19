@@ -1,6 +1,10 @@
 <?php
 
-require 'lib/calculator.php';
+function simpleAutoloader($class) {
+  $class = str_replace('\\', '/', $class);
+  require_once strtolower($class) . '.php';
+}
+spl_autoload_register('simpleAutoloader');
 
 if ($argc <= 1) {
   \Calculator\Calculator::printHelp();
@@ -14,5 +18,6 @@ try {
 } catch (\Exception $e) {
   \Calculator\Calculator::printHelp();
 }
+$calc->calculate();
 
 ?>
