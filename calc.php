@@ -1,14 +1,18 @@
 <?php
 
-function printHelp() {
-  echo "  Usage: php calculator.php [numbers to do math on]\n";
-  echo "    Available operations: +, -, *, \, %\n";
-  echo "    You can have spaces. () Parentheses don't work.\n";
-}
+require 'lib/calculator.php';
 
 if ($argc <= 1) {
-  printHelp();
+  \Calculator\Calculator::printHelp();
   exit;
+}
+
+// Get rid of the first argument (php call)
+array_shift($argv);
+try {
+  $calc = new \Calculator\Calculator($argv);
+} catch (\Exception $e) {
+  \Calculator\Calculator::printHelp();
 }
 
 ?>
