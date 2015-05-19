@@ -3,6 +3,13 @@
 namespace Calculator;
 
 class Calculator {
+
+  /**
+   * @var array[string] args the arguments, which include operators
+   * and operands
+   */
+  protected $args;
+
   /**
    * Make a new calculator
    *
@@ -10,6 +17,7 @@ class Calculator {
    */
   public function __construct(array $arguments) {
     $this->checkArgs($arguments);
+    $this->args = $arguments;
   }
 
   /**
@@ -35,5 +43,16 @@ class Calculator {
    *  calculator)
    */
   protected function checkArgs(array $arguments) {
+  }
+
+  /**
+   * Calculate the damn thing
+   */
+  public function calculate() {
+    $this->doMultiplication();
+    $this->doDivision();
+    $this->doModulus();
+    $this->doAddition();
+    $this->doSubtraction();
   }
 }
