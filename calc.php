@@ -19,5 +19,6 @@ try {
   \Calculator\Calculator::printHelp();
 }
 $calc->calculate();
+$calc->printResult();
 
 ?>

@@ -54,11 +54,131 @@ class Calculator {
    * Calculate the damn thing
    */
   public function calculate() {
-    $this->doMultiplication();
-    $this->doDivision();
-    $this->doModulus();
-    $this->doAddition();
-    $this->doSubtraction();
+    while (count($this->args) > 1) {
+      $operation = $this->breakOffOneOperation();
+      $result = 0;
+      switch ($operation['operator']) {
+      case '*':
+        $result = $operation['leftOperand'] * $operation['rightOperand'];
+        break;
+      case '/':
+        $result = $operation['leftOperand'] / $operation['rightOperand'];
+        break;
+      case '%':
+        $result = $operation['leftOperand'] % $operation['rightOperand'];
+        break;
+      case '+':
+        $result = $operation['leftOperand'] + $operation['rightOperand'];
+        break;
+      case '-':
+        $result = $operation['leftOperand'] - $operation['rightOperand'];
+        break;
+      default:
+        break;
+      }
+      $this->args[$operation['index'] - 1] = $result;
+      unset($this->args[$operation['index']]);
+      unset($this->args[$operation['index'] + 1]);
+      // re-index the array
+      $this->args = array_values($this->args);
+    }
+  }
+
+  private function breakOffOneOperation() {
+    if (($indexOfOperator = $this->findMultiplication()) !== false) {
+      return [
+        'leftOperand' => $this->args[$indexOfOperator - 1],
+        'rightOperand' => $this->args[$indexOfOperator + 1],
+        'operator' => $this->args[$indexOfOperator],
+        'index' => $indexOfOperator,
+      ];
+    }
+    if (($indexOfOperator = $this->findDivision()) !== false) {
+      return [
+        'leftOperand' => $this->args[$indexOfOperator - 1],
+        'rightOperand' => $this->args[$indexOfOperator + 1],
+        'operator' => $this->args[$indexOfOperator],
+        'index' => $indexOfOperator,
+      ];
+    }
+    if (($indexOfOperator = $this->findModulus()) !== false) {
+      return [
+        'leftOperand' => $this->args[$indexOfOperator - 1],
+        'rightOperand' => $this->args[$indexOfOperator + 1],
+        'operator' => $this->args[$indexOfOperator],
+        'index' => $indexOfOperator,
+      ];
+    }
+    if (($indexOfOperator = $this->findAddition()) !== false) {
+      return [
+        'leftOperand' => $this->args[$indexOfOperator - 1],
+        'rightOperand' => $this->args[$indexOfOperator + 1],
+        'operator' => $this->args[$indexOfOperator],
+        'index' => $indexOfOperator,
+      ];
+    }
+    if (($indexOfOperator = $this->findSubtraction()) !== false) {
+      return [
+        'leftOperand' => $this->args[$indexOfOperator - 1],
+        'rightOperand' => $this->args[$indexOfOperator + 1],
+        'operator' => $this->args[$indexOfOperator],
+        'index' => $indexOfOperator,
+      ];
+    }
+  }
+
+  protected function findMultiplication() {
+    // operands are on the odd indexes
+    for ($i = 1; $i < count($this->args); $i += 2) {
+      if ($this->args[$i] === '*') {
+        return $i;
+      }
+    }
+    return false;
+  }
+
+  protected function findDivision() {
+    // operands are on the odd indexes
+    for ($i = 1; $i < count($this->args); $i += 2) {
+      if ($this->args[$i] === '/') {
+        return $i;
+      }
+    }
+    return false;
+  }
+
+  protected function findModulus() {
+    // operands are on the odd indexes
+    for ($i = 1; $i < count($this->args); $i += 2) {
+      if ($this->args[$i] === '%') {
+        return $i;
+      }
+    }
+    return false;
+  }
+
+  protected function findAddition() {
+    // operands are on the odd indexes
+    for ($i = 1; $i < count($this->args); $i += 2) {
+      if ($this->args[$i] === '+') {
+        return $i;
+      }
+    }
+    return false;
+  }
+
+  protected function findSubtraction() {
+    // operands are on the odd indexes
+    for ($i = 1; $i < count($this->args); $i += 2) {
+      if ($this->args[$i] === '-') {
+        return $i;
+      }
+    }
+    return false;
+  }
+
+  public function printResult() {
+    print_r($this->args[0]);
   }
 
   /**
@@ -66,9 +186,8 @@ class Calculator {
    */
   protected function doMultiplication() {
     // operands are on the odd indexes
-    $iterations = count($this->args) / 3;
-    for ($i = 1; $i <= $iterations; $i+= 2) {
-      if ($this->args[$i] == '*') {
+    for ($i = 1; $i <= count($this->args); $i+= 2) {
+      if ($this->args[$i] === '*') {
         $this->operations[] = new Multiplication(
           $this->args[$i - 1],
           $this->args[$i],
